@@ -9,7 +9,7 @@ import jakarta.persistence.*
 class Order(
 
     @Column(name = "status")
-    var status: Boolean,
+    var status: String,
 
     @Column(name = "address")
     var address: String,
