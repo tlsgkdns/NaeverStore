@@ -3,7 +3,7 @@ package com.naever.store.domain.user.model
 import com.naever.store.common.BaseTimeEntity
 import jakarta.persistence.*
 
-@Table(name = "user")
+@Table(name = "app_user")
 @Entity
 data class User(
     @Column(name = "nickname")
