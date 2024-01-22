@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping
 @Table(name = "password_history")
 data class PasswordHistory(
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user")
-    @Column(name = "user_id")
-    val userId: User,
+    @JoinColumn(name = "user_id")
+    val user: User,
     @Column(name = "name")
     val password: String
 ): BaseTimeEntity()
