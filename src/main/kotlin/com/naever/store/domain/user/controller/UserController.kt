@@ -25,7 +25,6 @@ class UserController(
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.loginUser(userLoginDTO))
     }
-    @PreAuthorize("hasAuthority('USER')")
     @PutMapping("/{userId}")
     fun updateUser(@PathVariable userId: Long, updateRequest: UserUpdateRequest)
     : ResponseEntity<UserResponse>
@@ -33,7 +32,6 @@ class UserController(
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updateUser(userId, updateRequest))
     }
-    @PreAuthorize("hasAuthority('USER')")
     @PatchMapping("/{userId}")
     fun updatePassword(@PathVariable userId: Long,
                        @RequestBody userPasswordUpdateDTO: UserPasswordUpdateRequest): ResponseEntity<UserResponse>
