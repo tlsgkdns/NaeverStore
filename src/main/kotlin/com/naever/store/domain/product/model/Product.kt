@@ -11,7 +11,7 @@ class Product(
     var itemName: String,
 
     @Column(name = "availability")
-    var availability: Boolean,
+    var availability: Boolean = true,
 
     @Column(name = "quantity")
     val quantity: Int,
@@ -25,10 +25,15 @@ class Product(
     @Column(name = "description")
     var description: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val user: User
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    val user: User
 ) {
+    init {
+        if (quantity < 1) {
+            throw IllegalArgumentException("quantity must be at least 1")
+        }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
