@@ -1,5 +1,7 @@
 package com.naever.store.domain.product.service
 
+import com.naever.store.domain.product.dto.ProductPageRequest
+import com.naever.store.domain.product.dto.ProductPageResponse
 import com.naever.store.domain.product.dto.ProductRequest
 import com.naever.store.domain.product.dto.ProductResponse
 import com.naever.store.domain.product.model.Product
@@ -23,7 +25,12 @@ class ProductServiceImpl(
         ).let {
             productRepository.save(it)
         }.let {
-            ProductResponse.from(it) }
+            ProductResponse.from(it)
+        }
+    }
+
+    override fun getProductList(pageNumber: Int, pageSize: Int, request: ProductPageRequest): ProductPageResponse {
+        return productRepository.getPaginatedProductList(pageNumber, pageSize, request)
     }
 
 }
