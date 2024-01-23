@@ -18,8 +18,8 @@ class Product(
     @Column(name = "price")
     var price: Int,
 
-    @Column(name = "sale")
-    var sale: Int,
+    @Column(name = "sales")
+    var sales: Int,
 
     @Column(name = "description")
     var description: String
