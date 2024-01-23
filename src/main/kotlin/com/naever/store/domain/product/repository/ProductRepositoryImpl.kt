@@ -70,4 +70,8 @@ class ProductRepositoryImpl(
         return productJpaRepository.findByIdOrNull(id)
     }
 
+    override fun deleteProductById(id: Long) {
+        productJpaRepository.deleteById(id)
+    }
+
 }

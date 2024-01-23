@@ -15,4 +15,6 @@ interface ProductService {
 
     fun updateProduct(productId: Long, request: ProductRequest): ProductResponse
 
+    fun deleteProduct(productId: Long)
+
 }

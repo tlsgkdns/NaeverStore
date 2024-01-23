@@ -8,6 +8,7 @@ import com.naever.store.domain.product.dto.ProductResponse
 import com.naever.store.domain.product.model.Product
 import com.naever.store.domain.product.repository.IProductRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductServiceImpl(
@@ -51,6 +52,15 @@ class ProductServiceImpl(
         return productRepository.save(product).let {
             ProductResponse.from(product)
         }
+    }
+
+    override fun deleteProduct(productId: Long) {
+
+        val product = productRepository.findProductById(productId) ?: throw ModelNotFoundException("Product", productId)
+
+        // TODO : controller 에서 받은 user id 와 product 의 user id 일치하는지 확인
+
+        productRepository.deleteProductById(product.id!!)
     }
 
 }

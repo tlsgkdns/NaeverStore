@@ -12,4 +12,6 @@ interface IProductRepository {
 
     fun findProductById(id: Long): Product?
 
+    fun deleteProductById(id: Long)
+
 }
