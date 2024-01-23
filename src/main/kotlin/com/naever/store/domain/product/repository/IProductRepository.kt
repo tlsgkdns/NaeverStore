@@ -10,4 +10,6 @@ interface IProductRepository {
 
     fun getPaginatedProductList(pageNumber: Int, pageSize: Int, request: ProductPageRequest): ProductPageResponse
 
+    fun findProductById(id: Long): Product?
+
 }

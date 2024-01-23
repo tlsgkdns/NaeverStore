@@ -11,4 +11,6 @@ interface ProductService {
 
     fun getProductList(pageNumber: Int, pageSize: Int, request: ProductPageRequest): ProductPageResponse
 
+    fun getProductById(productId: Long): ProductResponse
+
 }

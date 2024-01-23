@@ -1,5 +1,6 @@
 package com.naever.store.domain.product.service
 
+import com.naever.store.domain.exception.ModelNotFoundException
 import com.naever.store.domain.product.dto.ProductPageRequest
 import com.naever.store.domain.product.dto.ProductPageResponse
 import com.naever.store.domain.product.dto.ProductRequest
@@ -31,6 +32,12 @@ class ProductServiceImpl(
 
     override fun getProductList(pageNumber: Int, pageSize: Int, request: ProductPageRequest): ProductPageResponse {
         return productRepository.getPaginatedProductList(pageNumber, pageSize, request)
+    }
+
+    override fun getProductById(productId: Long): ProductResponse {
+        val product = productRepository.findProductById(productId) ?: throw ModelNotFoundException("Product", productId)
+
+        return ProductResponse.from(product)
     }
 
 }

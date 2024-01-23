@@ -1,5 +1,6 @@
 package com.naever.store.domain.product.model
 
+import com.naever.store.common.BaseTimeEntity
 import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
 
@@ -28,7 +29,7 @@ class Product(
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")
 //    val user: User
-) {
+) : BaseTimeEntity() {
     init {
         if (quantity < 1) {
             throw IllegalArgumentException("quantity must be at least 1")

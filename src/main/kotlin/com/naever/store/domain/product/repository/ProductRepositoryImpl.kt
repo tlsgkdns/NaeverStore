@@ -8,6 +8,7 @@ import com.naever.store.domain.product.model.QProduct
 import com.naever.store.domain.user.model.QUser
 import com.naever.store.infra.querydsl.QueryDslSupport
 import com.querydsl.core.BooleanBuilder
+import org.springframework.data.repository.findByIdOrNull
 import kotlin.math.ceil
 
 class ProductRepositoryImpl(
@@ -63,6 +64,10 @@ class ProductRepositoryImpl(
             pageResult = query.fetch().map { ProductResponse.from(it) },
             totalPages = totalPages
         )
+    }
+
+    override fun findProductById(id: Long): Product? {
+        return productJpaRepository.findByIdOrNull(id)
     }
 
 }
