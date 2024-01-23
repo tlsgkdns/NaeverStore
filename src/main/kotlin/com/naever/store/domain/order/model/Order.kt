@@ -5,20 +5,24 @@ import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "order_history")
+@Table(name = "order_items") // 주문을 생성, 조회, 수정, 삭제할 때의 Entity입니다.
 class Order(
-
-    @Column(name = "status")
-    var status: String,
-
-    @Column(name = "address")
+    @Column
     var address: String,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val user: User
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    val orderItems: List<SelectItem> = mutableListOf(),
 
-) : BaseTimeEntity() {
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    val user: User,
+
+    @Column
+    var status: String,
+
+
+    ) : BaseTimeEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
