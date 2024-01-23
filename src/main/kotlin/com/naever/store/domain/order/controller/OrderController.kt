@@ -28,13 +28,14 @@ class OrderController(private val orderItemService: OrderService) {
         return ResponseEntity.status(HttpStatus.OK).body(orderItemService.findById(orderId))
     }
 
-    @PostMapping("/selectItem")
-    fun selectItem(@RequestBody selectItemRequest: SelectItemRequest): ResponseEntity<SelectItemResponse> {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderItemService.selectItem(selectItemRequest))
-    }
+//    @PostMapping("/selectItem")
+//    fun selectItem(@RequestBody orderItemRequest: OrderItemRequest): ResponseEntity<SelectItemResponse> {
+//        return ResponseEntity.status(HttpStatus.CREATED).body(orderItemService.selectItem(orderItemRequest))
+//    }
 
     @PostMapping
     fun createOrder(@RequestBody orderRequest: CreateOrderRequest): ResponseEntity<OrderDetailResponse> {
+        // TODO : Authentication 의 Principal 에서 user id 가져와서 orderRequest 에 넣어주기
         return ResponseEntity.status(HttpStatus.CREATED).body(orderItemService.createOrder(orderRequest))
     }
 

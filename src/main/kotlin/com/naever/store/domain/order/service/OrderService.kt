@@ -4,7 +4,7 @@ import com.naever.store.domain.order.dto.*
 
 interface OrderService {
 
-    fun selectItem(request: SelectItemRequest): SelectItemResponse
+//    fun selectItem(request: OrderItemRequest): SelectItemResponse
 
     fun findAll(): List<OrderDetailResponse>
 
