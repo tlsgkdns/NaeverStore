@@ -1,7 +1,8 @@
 package com.naever.store.domain.review.model
 
 import com.naever.store.common.BaseTimeEntity
-import com.naever.store.domain.order.model.Order
+import com.naever.store.domain.product.model.Product
+import com.naever.store.domain.review.dto.ReviewResponse
 import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
 
@@ -16,8 +17,8 @@ class Review (
         val content : String,
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "order_id")
-        val order : Order,
+        @JoinColumn(name = "product_id")
+        val product : Product,
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
@@ -28,4 +29,13 @@ class Review (
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null
+}
+
+fun Review.toResponse(): ReviewResponse {
+        return ReviewResponse(
+                ratingId = id!!,
+                rating = rating,
+                content = content,
+                createdAt = createdAt,
+        )
 }

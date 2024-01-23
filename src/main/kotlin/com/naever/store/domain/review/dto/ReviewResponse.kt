@@ -1,10 +1,10 @@
 package com.naever.store.domain.review.dto
 
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
-data class RatingResponse(
+data class ReviewResponse(
     val ratingId : Long,
     val rating : String,
     val content : String,
-    val createdAt : LocalDateTime
+    val createdAt : ZonedDateTime
 )
