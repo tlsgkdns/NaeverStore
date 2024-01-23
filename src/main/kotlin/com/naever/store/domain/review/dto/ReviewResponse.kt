@@ -1,10 +1,10 @@
 package com.naever.store.domain.review.dto
 
-import java.time.ZonedDateTime
+import org.hibernate.annotations.CreationTimestamp
 
 data class ReviewResponse(
     val ratingId : Long,
     val rating : String,
     val content : String,
-    val createdAt : ZonedDateTime
+    val createdAt : CreationTimestamp
 )
