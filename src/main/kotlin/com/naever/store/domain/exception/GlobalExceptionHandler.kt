@@ -15,5 +15,11 @@ class GlobalExceptionHandler {
             .status(HttpStatus.NOT_FOUND)
             .body(ErrorResponse(message = e.message))
     }
-
+    @ExceptionHandler(UniqueAttributeValueAlreadyExistException::class)
+    fun handleUniqueAttributeValueAlreadyExistException(e: UniqueAttributeValueAlreadyExistException):
+            ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(message = e.message))
+    }
 }
