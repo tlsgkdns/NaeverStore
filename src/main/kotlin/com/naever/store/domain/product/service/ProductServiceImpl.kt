@@ -40,4 +40,17 @@ class ProductServiceImpl(
         return ProductResponse.from(product)
     }
 
+    override fun updateProduct(productId: Long, request: ProductRequest): ProductResponse {
+
+        val product = productRepository.findProductById(productId) ?: throw ModelNotFoundException("Product", productId)
+
+        // TODO : controller 에서 받은 user id 와 product 의 user id 일치하는지 확인
+
+        product.updateProduct(request)
+
+        return productRepository.save(product).let {
+            ProductResponse.from(product)
+        }
+    }
+
 }

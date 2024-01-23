@@ -13,4 +13,6 @@ interface ProductService {
 
     fun getProductById(productId: Long): ProductResponse
 
+    fun updateProduct(productId: Long, request: ProductRequest): ProductResponse
+
 }
