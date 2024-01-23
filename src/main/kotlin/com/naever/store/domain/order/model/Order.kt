@@ -5,11 +5,11 @@ import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "order")
+@Table(name = "order_history")
 class Order(
 
     @Column(name = "status")
-    var status: Boolean,
+    var status: String,
 
     @Column(name = "address")
     var address: String,
