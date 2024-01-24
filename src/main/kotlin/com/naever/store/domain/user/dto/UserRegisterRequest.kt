@@ -1,6 +1,7 @@
 package com.naever.store.domain.user.dto
 
 import com.naever.store.domain.user.model.User
+import org.hibernate.validator.constraints.Length
 import org.springframework.security.crypto.password.PasswordEncoder
 
 
