@@ -15,8 +15,8 @@ class Order(
     val user: User,
 
     @Column
-    // TODO : enum 을 만들어서 ORDERED, CANCELLED, DELIVERED 등을 넣어주면 좋을 것 같습니다ㅎㅎ
-    var status: String = "ORDERED",
+    @Enumerated(EnumType.STRING)
+    var status: OrderStatus = OrderStatus.ORDERED,
 
     ) : BaseTimeEntity() {
 

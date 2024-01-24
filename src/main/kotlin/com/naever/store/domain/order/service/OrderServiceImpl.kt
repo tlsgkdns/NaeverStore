@@ -21,16 +21,25 @@ class OrderServiceImpl(
 ) : OrderService {
 
     override fun findAll(): List<OrderDetailResponse> {
-        val foundOrders = orderItemRepository.findAll()
-//        return foundOrders.map{ OrderDetailResponse.fromEntity(it) }
-        TODO()
+        return orderRepository.findAll().map { order ->
+            val orderItemsResponse = orderItemRepository.findByOrder(order).map { OrderItemResponse.fromEntity(it) }
+            OrderDetailResponse(
+                order = OrderResponse.fromEntity(order),
+                orderItems = orderItemsResponse
+            )
+        }
     }
 
     override fun findById(orderId: Long): OrderDetailResponse {
-        val foundOrder = orderItemRepository.findByIdOrNull(orderId)
+        val foundOrder = orderRepository.findByIdOrNull(orderId)
             ?: throw ModelNotFoundException("Order", orderId)
-//        return OrderDetailResponse.fromEntity(foundOrder)
-        TODO()
+
+        val orderItemResponse = orderItemRepository.findByOrder(foundOrder).map { OrderItemResponse.fromEntity(it) }
+        return OrderDetailResponse(
+            order = OrderResponse.fromEntity(foundOrder),
+            orderItems = orderItemResponse
+        )
+
     }
 
     @Transactional
@@ -65,21 +74,25 @@ class OrderServiceImpl(
         }
 
         return OrderDetailResponse(
-            order = OrderResponse.from(order),
+            order = OrderResponse.fromEntity(order),
             orderItems = orderItems
         )
     }
 
     @Transactional
     override fun updateOrder(orderId: Long, request: UpdateOrderRequest): OrderDetailResponse {
-        val updatedOrder = orderItemRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
+        val updatedOrderItem = orderItemRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
 
-//        updatedOrder.address = request.address
-//        updatedOrder.status = request.status
+        updatedOrderItem.order.address = request.address
+        updatedOrderItem.order.status = request.status
 
-        val savedUpdatedOrder = orderItemRepository.save(updatedOrder)
-//        return OrderDetailResponse.fromEntity(savedUpdatedOrder)
-        TODO()
+        val savedUpdatedOrderItem = orderItemRepository.save(updatedOrderItem)
+
+        val orderItemsResponse = savedUpdatedOrderItem.order.let { order -> orderItemRepository.findByOrder(order).map {OrderItemResponse.fromEntity(it)} }
+        return OrderDetailResponse(
+            order = OrderResponse.fromEntity(savedUpdatedOrderItem.order),
+            orderItems = orderItemsResponse
+        )
     }
 
     @Transactional
