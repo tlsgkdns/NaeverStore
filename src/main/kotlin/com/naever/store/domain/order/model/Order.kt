@@ -10,19 +10,13 @@ class Order(
     @Column
     var address: String,
 
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id")
-//    val orderItems: List<OrderItem> = mutableListOf(),
-
-    // TODO: User 브랜치와 합친 후에 주석 해제
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    val user: User,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    val user: User,
 
     @Column
     // TODO : enum 을 만들어서 ORDERED, CANCELLED, DELIVERED 등을 넣어주면 좋을 것 같습니다ㅎㅎ
     var status: String = "ORDERED",
-
 
     ) : BaseTimeEntity() {
 

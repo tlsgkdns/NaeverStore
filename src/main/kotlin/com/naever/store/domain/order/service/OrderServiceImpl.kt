@@ -6,7 +6,8 @@ import com.naever.store.domain.order.model.OrderItem
 import com.naever.store.domain.order.model.Order
 import com.naever.store.domain.order.repository.OrderRepository
 import com.naever.store.domain.order.repository.OrderItemRepository
-import com.naever.store.domain.user.model.User
+import com.naever.store.domain.product.repository.IProductRepository
+import com.naever.store.domain.user.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +15,10 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class OrderServiceImpl(
     private val orderItemRepository: OrderItemRepository,
-    private val orderRepository: OrderRepository) : OrderService {
+    private val orderRepository: OrderRepository,
+    private val productRepository: IProductRepository,
+    private val userRepository: UserRepository
+) : OrderService {
 
     override fun findAll(): List<OrderDetailResponse> {
         val foundOrders = orderItemRepository.findAll()
@@ -29,36 +33,31 @@ class OrderServiceImpl(
         TODO()
     }
 
-//    @Transactional
-//    override fun selectItem(request: OrderItemRequest): SelectItemResponse {
-        // TODO : 장바구니에 담으려면 사용자 id 와 상품 id 를 담을 Cart Entity 가 필요합니다ㅎㅎ
-//        val selectedItems = selectItemRepository.save(
-//            OrderItem(request.selectedItem, request.quantity)
-//        )
-//        return SelectItemResponse.fromEntity(selectedItems)
-//    }
-
     @Transactional
-    override fun createOrder(request: CreateOrderRequest): OrderDetailResponse {
+    override fun createOrder(userId: Long, request: CreateOrderRequest): OrderDetailResponse {
 
-        // TODO : User Repository 에서 request.userId 로 user 찾기
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
         val order = orderRepository.save(
             Order(
-                // TODO: 찾은 user 넣어주기
+                user = user,
                 address = request.address
             )
         )
 
-        // TODO : Product Repository 에서 productId 로 product 찾기
-
         val orderItems = ArrayList<OrderItemResponse>()
         for (orderItemRequest in request.orderItems) {
+
+            val product = productRepository.findProductById(orderItemRequest.productId)
+                ?: throw ModelNotFoundException("Product", orderItemRequest.productId)
+
+            product.order(orderItemRequest.quantity)
+
             orderItems.add(orderItemRepository.save(
                 OrderItem(
-                order = order,
-                // TODO: 찾은 product 넣어주기
-                quantity = orderItemRequest.quantity
+                    order = order,
+                    product = product,
+                    quantity = orderItemRequest.quantity
                 )
             ).let {
                 OrderItemResponse.fromEntity(it)
@@ -69,17 +68,6 @@ class OrderServiceImpl(
             order = OrderResponse.from(order),
             orderItems = orderItems
         )
-
-//        val orderItem = OrderItem(request.product, request.quantity)
-//        val savedOrder = orderItemRepository.save(
-//            Order(
-//                orderItems = listOf(orderItem),
-//                address = request.address,
-////              user = userRepository.findByIdOrNull(request.userId) ?: throw ModelNotFoundException("User", request.userId),
-//                status = request.status,
-//            )
-//        )
-//        return OrderDetailResponse.fromEntity(order)
     }
 
     @Transactional
