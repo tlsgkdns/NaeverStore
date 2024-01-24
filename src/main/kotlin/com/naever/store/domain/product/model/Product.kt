@@ -27,9 +27,10 @@ class Product(
     @Column(name = "description")
     var description: String,
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    val user: User
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    val user: User
+
 ) : BaseTimeEntity() {
     init {
         if (quantity < 1) {
@@ -41,10 +42,15 @@ class Product(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
+    fun matchUserId(requestUserId: Long): Boolean {
+        return user.id == requestUserId
+    }
+
     fun updateProduct(request: ProductRequest) {
         itemName = request.itemName
         price = request.price
         description = request.description
         quantity = request.quantity
     }
+
 }
