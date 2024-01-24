@@ -10,7 +10,7 @@ data class PasswordHistory(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
-    @Column(name = "name")
+    @Column(name = "password")
     val password: String
 ): BaseTimeEntity()
 {
