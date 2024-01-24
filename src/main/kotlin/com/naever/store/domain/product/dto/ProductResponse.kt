@@ -10,7 +10,7 @@ data class ProductResponse(
     val quantity: Int,
     val sales: Int,
     val availability: Boolean,
-//    val userId: Long?,
+    val userId: Long?,
 ) {
     companion object {
         fun from(product: Product) : ProductResponse {
@@ -22,7 +22,7 @@ data class ProductResponse(
                 quantity = product.quantity,
                 sales = product.sales,
                 availability = product.availability,
-//                userId = product.user.id
+                userId = product.user.id
             )
         }
     }
