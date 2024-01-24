@@ -35,7 +35,6 @@ class UserController(
     fun updateUser(@PathVariable userId: Long, updateRequest: UserUpdateRequest)
     : ResponseEntity<UserResponse>
     {
-        val user = (SecurityContextHolder.getContext()?.authentication?.principal)
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updateUser(userId, updateRequest))
     }
