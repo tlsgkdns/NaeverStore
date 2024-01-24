@@ -5,11 +5,11 @@ import com.naever.store.domain.review.dto.ReviewResponse
 import com.naever.store.domain.review.dto.UpdateReviewRequest
 
 interface ReviewService {
-    fun getAllReviewList(productId: Long): List<ReviewResponse>
+    fun getAllReviewList(orderItemId: Long): List<ReviewResponse>
 
-    fun createReview(productId: Long, request: CreateReviewRequest): ReviewResponse
+    fun createReview(orderItemId: Long, request: CreateReviewRequest): ReviewResponse
 
-    fun updateReview(productId: Long, reviewId: Long, request: UpdateReviewRequest): ReviewResponse
+    fun updateReview(orderItemId: Long, reviewId: Long, request: UpdateReviewRequest): ReviewResponse
 
-    fun deleteReview(productId: Long, reviewId: Long)
+    fun deleteReview(orderItemId: Long, reviewId: Long)
 }
