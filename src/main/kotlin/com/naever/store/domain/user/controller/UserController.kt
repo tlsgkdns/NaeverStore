@@ -2,15 +2,9 @@ package com.naever.store.domain.user.controller
 
 import com.naever.store.domain.user.dto.*
 import com.naever.store.domain.user.service.UserService
-import com.naever.store.infra.security.SecurityConfig
-import com.naever.store.infra.security.UserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.context.SecurityContext
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
 @RestController
