@@ -37,6 +37,7 @@ class ReviewController(
     @PostMapping
     fun createReview(
         @PathVariable orderItemId: Long,
+        @PathVariable userId: Long,
         @RequestBody createReviewRequest: CreateReviewRequest
     ): ResponseEntity<ReviewResponse> {
         return ResponseEntity

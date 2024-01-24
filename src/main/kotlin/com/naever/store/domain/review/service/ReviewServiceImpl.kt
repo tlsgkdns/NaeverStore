@@ -1,16 +1,19 @@
 package com.naever.store.domain.review.service
 
 import com.naever.store.domain.exception.ModelNotFoundException
+import com.naever.store.domain.order.model.QOrderItem.orderItem
 import com.naever.store.domain.order.repository.OrderItemRepository
 import com.naever.store.domain.review.dto.CreateReviewRequest
 import com.naever.store.domain.review.dto.ReviewResponse
 import com.naever.store.domain.review.dto.UpdateReviewRequest
 import com.naever.store.domain.review.model.Review
+import com.naever.store.domain.review.model.toResponse
 import com.naever.store.domain.review.repositiory.ReviewRepository
-import com.naever.store.domain.user.model.QUser.user
 import com.naever.store.domain.user.repository.UserRepository
+import com.naever.store.infra.security.SecurityUtil
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ReviewServiceImpl(
@@ -23,15 +26,26 @@ class ReviewServiceImpl(
         TODO()
     }
 
+    @Transactional
     override fun createReview(orderItemId: Long, request: CreateReviewRequest): ReviewResponse{
-        TODO()
-
+        val orderItem = orderItemRepository.findByIdOrNull(orderItemId) ?: throw ModelNotFoundException("orderItem", orderItemId)
+        val user = userRepository.findByIdOrNull(SecurityUtil.getLoginUserId()) ?: throw ModelNotFoundException("User", SecurityUtil.getLoginUserId())
+        return reviewRepository.save(
+                Review(
+                    rating = request.rating,
+                    content = request.content,
+                    orderItem = orderItem,
+                    user = user
+                )
+        ).toResponse()
     }
 
+    @Transactional
     override fun updateReview(orderItemId: Long, reviewId: Long, request: UpdateReviewRequest): ReviewResponse{
         TODO()
     }
 
+    @Transactional
     override fun deleteReview(orderItemId: Long, reviewId: Long){
         TODO()
     }
