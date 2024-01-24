@@ -7,7 +7,7 @@ data class ProductResponse(
     val itemName: String,
     val price: Int,
     val description: String,
-    val quantity: Int,
+    val stock: Int,
     val sales: Int,
     val availability: Boolean,
     val userId: Long?,
@@ -19,7 +19,7 @@ data class ProductResponse(
                 itemName = product.itemName,
                 price = product.price,
                 description = product.description,
-                quantity = product.quantity,
+                stock = product.stock,
                 sales = product.sales,
                 availability = product.availability,
                 userId = product.user.id

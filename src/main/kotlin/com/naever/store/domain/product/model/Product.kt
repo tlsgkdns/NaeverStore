@@ -15,8 +15,8 @@ class Product(
     @Column(name = "availability")
     var availability: Boolean = true,
 
-    @Column(name = "quantity")
-    var quantity: Int,
+    @Column(name = "stock")
+    var stock: Int,
 
     @Column(name = "price")
     var price: Int,
@@ -33,8 +33,8 @@ class Product(
 
 ) : BaseTimeEntity() {
     init {
-        if (quantity < 1) {
-            throw IllegalArgumentException("quantity must be at least 1")
+        if (stock < 1) {
+            throw IllegalArgumentException("stock must be at least 1")
         }
     }
 
@@ -50,7 +50,20 @@ class Product(
         itemName = request.itemName
         price = request.price
         description = request.description
-        quantity = request.quantity
+        stock = request.stock
+    }
+
+    fun order(quantity: Int) {
+        if (stock - quantity < 0) {
+            throw IllegalStateException("out of stock")
+        }
+        stock -= quantity
+        sales += quantity
+        changeAvailability()
+    }
+
+    private fun changeAvailability() {
+        availability = stock > 0
     }
 
 }
