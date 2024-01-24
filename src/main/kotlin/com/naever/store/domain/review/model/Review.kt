@@ -1,7 +1,7 @@
 package com.naever.store.domain.review.model
 
 import com.naever.store.common.BaseTimeEntity
-import com.naever.store.domain.order.model.SelectItem
+import com.naever.store.domain.order.model.OrderItem
 import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
 
@@ -16,8 +16,8 @@ class Review (
         val content : String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "order_id")
-        val order : SelectItem,
+        @JoinColumn(name = "order_item_id")
+        val orderItem : OrderItem,
 
     @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
