@@ -37,14 +37,10 @@ class ProductRepositoryImpl(
 
         val query = queryFactory.select(product)
             .from(product)
-//            .leftJoin(product.user, user).fetchJoin()
+            .leftJoin(product.user, user).fetchJoin()
             .where(whereClause)
 
         val totalPages = ceil(query.fetch().size / pageSize.toDouble()).toInt()
-
-        query
-            .offset(((pageNumber - 1) * pageSize).toLong())
-            .limit(pageSize.toLong())
 
         when (sort) {
             "price_low" -> {
@@ -59,6 +55,10 @@ class ProductRepositoryImpl(
                 query.orderBy(product.id.desc())
             }
         }
+
+        query
+            .offset(((pageNumber - 1) * pageSize).toLong())
+            .limit(pageSize.toLong())
 
         return ProductPageResponse(
             pageResult = query.fetch().map { ProductResponse.from(it) },

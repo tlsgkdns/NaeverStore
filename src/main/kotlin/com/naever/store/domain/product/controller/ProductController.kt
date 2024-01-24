@@ -5,8 +5,10 @@ import com.naever.store.domain.product.dto.ProductPageResponse
 import com.naever.store.domain.product.dto.ProductRequest
 import com.naever.store.domain.product.dto.ProductResponse
 import com.naever.store.domain.product.service.ProductService
+import com.naever.store.infra.security.UserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -24,10 +26,14 @@ class ProductController(
 ) {
 
     @PostMapping
-    fun registerProduct(@RequestBody request: ProductRequest): ResponseEntity<ProductResponse> {
+    fun registerProduct(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @RequestBody request: ProductRequest
+    ): ResponseEntity<ProductResponse> {
+
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(productService.registerProduct(request))
+            .body(productService.registerProduct(userPrincipal.id, request))
     }
 
     @GetMapping
@@ -36,6 +42,7 @@ class ProductController(
         @RequestParam(defaultValue = "5") pageSize: Int,
         request: ProductPageRequest
     ): ResponseEntity<ProductPageResponse> {
+
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(productService.getProductList(pageNumber, pageSize, request))
@@ -43,6 +50,7 @@ class ProductController(
 
     @GetMapping("/{productId}")
     fun getProductById(@PathVariable productId: Long): ResponseEntity<ProductResponse> {
+
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(productService.getProductById(productId))
@@ -50,19 +58,27 @@ class ProductController(
 
     @PutMapping("/{productId}")
     fun updateProduct(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable productId: Long,
         @RequestBody request: ProductRequest
     ): ResponseEntity<ProductResponse> {
+
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(productService.updateProduct(productId, request))
+            .body(productService.updateProduct(userPrincipal.id, productId, request))
     }
 
     @DeleteMapping("/{productId}")
-    fun deleteProduct(@PathVariable productId: Long): ResponseEntity<Unit> {
+    fun deleteProduct(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable productId: Long
+    ): ResponseEntity<Unit> {
+
+        productService.deleteProduct(userPrincipal.id, productId)
+
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
-            .body(productService.deleteProduct(productId))
+            .build()
     }
 
 }

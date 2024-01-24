@@ -15,6 +15,14 @@ class GlobalExceptionHandler {
             .status(HttpStatus.NOT_FOUND)
             .body(ErrorResponse(message = e.message))
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponse(message = e.message))
+    }
+
     @ExceptionHandler(UniqueAttributeValueAlreadyExistException::class)
     fun handleUniqueAttributeValueAlreadyExistException(e: UniqueAttributeValueAlreadyExistException):
             ResponseEntity<ErrorResponse> {
@@ -23,10 +31,17 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(message = e.message))
     }
 
-    @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgumentException(e: IllegalArgumentException): ResponseEntity<ErrorResponse> {
+    @ExceptionHandler(InvalidCredentialException::class)
+    fun handleIllegalStateException(e: InvalidCredentialException): ResponseEntity<ErrorResponse> {
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponse(message = e.message))
+    }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleIllegalStateException(e: ForbiddenException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
             .body(ErrorResponse(message = e.message))
     }
 
