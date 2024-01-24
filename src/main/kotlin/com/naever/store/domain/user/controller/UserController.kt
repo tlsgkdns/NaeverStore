@@ -2,9 +2,14 @@ package com.naever.store.domain.user.controller
 
 import com.naever.store.domain.user.dto.*
 import com.naever.store.domain.user.service.UserService
+import com.naever.store.infra.security.SecurityConfig
+import com.naever.store.infra.security.UserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
@@ -25,13 +30,16 @@ class UserController(
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.loginUser(userLoginDTO))
     }
+    @PreAuthorize("hasAuthority('ROLE_USER') && authentication?.principal?.id == #userId")
     @PutMapping("/{userId}")
     fun updateUser(@PathVariable userId: Long, updateRequest: UserUpdateRequest)
     : ResponseEntity<UserResponse>
     {
+        val user = (SecurityContextHolder.getContext()?.authentication?.principal)
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updateUser(userId, updateRequest))
     }
+    @PreAuthorize("hasAuthority('ROLE_USER') && authentication?.principal?.id == #userId")
     @PatchMapping("/{userId}")
     fun updatePassword(@PathVariable userId: Long,
                        @RequestBody userPasswordUpdateDTO: UserPasswordUpdateRequest): ResponseEntity<UserResponse>
