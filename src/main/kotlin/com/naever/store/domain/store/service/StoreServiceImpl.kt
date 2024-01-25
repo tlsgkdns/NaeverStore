@@ -2,6 +2,7 @@ package com.naever.store.domain.store.service
 
 import com.naever.store.domain.exception.ForbiddenException
 import com.naever.store.domain.exception.ModelNotFoundException
+import com.naever.store.domain.product.repository.IProductRepository
 import com.naever.store.domain.store.dto.StoreRequest
 import com.naever.store.domain.store.dto.StoreResponse
 import com.naever.store.domain.store.model.Store
@@ -10,11 +11,13 @@ import com.naever.store.domain.user.repository.UserRepository
 import com.naever.store.infra.security.SecurityUtil
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class StoreServiceImpl(
     private val userRepository: UserRepository,
     private val storeRepository: IStoreRepository,
+    private val productRepository: IProductRepository
 ) : StoreService {
 
     override fun createStore(request: StoreRequest): StoreResponse {
@@ -48,6 +51,17 @@ class StoreServiceImpl(
 
         return storeRepository.save(store)
             .let { StoreResponse.from(it) }
+    }
+
+    @Transactional
+    override fun deleteStore(storeId: Long) {
+
+        val store = getStoreIfAuthorized(SecurityUtil.getLoginUserId(), storeId)
+
+        productRepository.deleteAllByStoreId(storeId)
+
+        store.delete()
+        storeRepository.save(store)
     }
 
     override fun getStoreIfAuthorized(userId: Long?, storeId: Long): Store {

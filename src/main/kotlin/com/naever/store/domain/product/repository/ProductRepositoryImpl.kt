@@ -6,6 +6,7 @@ import com.naever.store.domain.product.dto.ProductResponse
 import com.naever.store.domain.product.model.Product
 import com.naever.store.domain.product.model.QProduct
 import com.naever.store.domain.store.model.QStore
+import com.naever.store.domain.user.model.QUser.user
 import com.naever.store.infra.querydsl.QueryDslSupport
 import com.querydsl.core.BooleanBuilder
 import org.springframework.data.repository.findByIdOrNull
@@ -39,6 +40,7 @@ class ProductRepositoryImpl(
         val query = queryFactory.select(product)
             .from(product)
             .leftJoin(product.store, store).fetchJoin()
+            .leftJoin(product.store.user, user).fetchJoin()
             .where(whereClause)
 
         val totalPages = ceil(query.fetch().size / pageSize.toDouble()).toInt()
@@ -73,6 +75,13 @@ class ProductRepositoryImpl(
 
     override fun deleteProductById(id: Long) {
         productJpaRepository.deleteById(id)
+    }
+
+    override fun deleteAllByStoreId(storeId: Long) {
+        queryFactory.update(product)
+            .set(product.isDeleted, true)
+            .where(product.store.id.eq(storeId))
+            .execute()
     }
 
 }

@@ -7,9 +7,7 @@ import org.springframework.data.repository.findByIdOrNull
 
 class StoreRepositoryImpl(
     private val storeJpaRepository: StoreJpaRepository
-) : IStoreRepository, QueryDslSupport() {
-
-    val store = QStore.store
+) : IStoreRepository {
 
     override fun save(store: Store): Store {
         return storeJpaRepository.save(store)
@@ -17,12 +15,6 @@ class StoreRepositoryImpl(
 
     override fun findById(id: Long): Store? {
         return storeJpaRepository.findByIdOrNull(id)
-    }
-
-    override fun findByUserId(userId: Long): Store? {
-        return queryFactory.select(store)
-            .where(store.user.id.eq(userId))
-            .fetchOne()
     }
 
 }

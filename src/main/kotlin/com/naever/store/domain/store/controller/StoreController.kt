@@ -40,6 +40,14 @@ class StoreController(
             .body(storeService.updateStore(storeId, request))
     }
 
+    @DeleteMapping("/{storeId}")
+    fun deleteStore(@PathVariable storeId: Long): ResponseEntity<Unit> {
+        storeService.deleteStore(storeId)
+        return ResponseEntity
+            .status(HttpStatus.NO_CONTENT)
+            .build()
+    }
+
     @GetMapping("/{storeId}/products")
     fun getProductList(
         @PathVariable storeId: Long,

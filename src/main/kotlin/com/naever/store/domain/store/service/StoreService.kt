@@ -12,6 +12,8 @@ interface StoreService {
 
     fun updateStore(storeId: Long, request: StoreRequest): StoreResponse
 
+    fun deleteStore(storeId: Long)
+
     fun getStoreIfAuthorized(userId: Long?, storeId: Long): Store
 
 }

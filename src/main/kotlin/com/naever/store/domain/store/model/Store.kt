@@ -4,9 +4,11 @@ import com.naever.store.common.BaseTimeEntity
 import com.naever.store.domain.store.dto.StoreRequest
 import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
 
 @Entity
 @Table(name = "store")
+@SQLRestriction("is_deleted <> true")
 class Store(
 
     @Column(name = "name")
@@ -15,7 +17,7 @@ class Store(
     @Column(name = "introduction")
     var introduction: String,
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: User
 
@@ -32,6 +34,10 @@ class Store(
     fun update(request: StoreRequest) {
         name = request.name
         introduction = request.introduction
+    }
+
+    fun delete() {
+        isDeleted = true
     }
 
 }
