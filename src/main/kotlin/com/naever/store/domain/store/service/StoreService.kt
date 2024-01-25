@@ -7,6 +7,8 @@ interface StoreService {
 
     fun createStore(request: StoreRequest): StoreResponse
 
+    fun getStore(storeId: Long): StoreResponse
+
     fun updateStore(storeId: Long, request: StoreRequest): StoreResponse
 
 }

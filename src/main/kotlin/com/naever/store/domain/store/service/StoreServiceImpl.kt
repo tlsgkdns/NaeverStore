@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 class StoreServiceImpl(
     private val userRepository: UserRepository,
-    private val storeRepository: IStoreRepository
+    private val storeRepository: IStoreRepository,
 ) : StoreService {
 
     override fun createStore(request: StoreRequest): StoreResponse {
@@ -33,6 +33,13 @@ class StoreServiceImpl(
         }
     }
 
+    override fun getStore(storeId: Long): StoreResponse {
+
+        val store = storeRepository.findById(storeId) ?: throw ModelNotFoundException("Store", storeId)
+
+        return StoreResponse.from(store)
+    }
+
     override fun updateStore(storeId: Long, request: StoreRequest): StoreResponse {
 
         val store = getStoreIfAuthorized(SecurityUtil.getLoginUserId(), storeId)
@@ -45,8 +52,7 @@ class StoreServiceImpl(
 
     private fun getStoreIfAuthorized(userId: Long?, storeId: Long): Store {
 
-        userRepository.findByIdOrNull(userId)
-            ?: throw ModelNotFoundException("User", userId)
+        userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
         val store = storeRepository.findById(storeId) ?: throw ModelNotFoundException("Store", storeId)
 
