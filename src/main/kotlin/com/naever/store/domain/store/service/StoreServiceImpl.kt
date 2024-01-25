@@ -1,5 +1,6 @@
 package com.naever.store.domain.store.service
 
+import com.naever.store.domain.exception.ForbiddenException
 import com.naever.store.domain.exception.ModelNotFoundException
 import com.naever.store.domain.store.dto.StoreRequest
 import com.naever.store.domain.store.dto.StoreResponse
@@ -30,6 +31,30 @@ class StoreServiceImpl(
         }.let {
             StoreResponse.from(it)
         }
+    }
+
+    override fun updateStore(storeId: Long, request: StoreRequest): StoreResponse {
+
+        val store = getStoreIfAuthorized(SecurityUtil.getLoginUserId(), storeId)
+
+        store.update(request)
+
+        return storeRepository.save(store)
+            .let { StoreResponse.from(it) }
+    }
+
+    private fun getStoreIfAuthorized(userId: Long?, storeId: Long): Store {
+
+        userRepository.findByIdOrNull(userId)
+            ?: throw ModelNotFoundException("User", userId)
+
+        val store = storeRepository.findById(storeId) ?: throw ModelNotFoundException("Store", storeId)
+
+        if (!store.matchUserId(userId!!)) {
+            throw ForbiddenException(userId, "Store", storeId)
+        }
+
+        return store
     }
 
 }

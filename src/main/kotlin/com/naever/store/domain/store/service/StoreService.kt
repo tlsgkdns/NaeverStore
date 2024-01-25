@@ -6,4 +6,7 @@ import com.naever.store.domain.store.dto.StoreResponse
 interface StoreService {
 
     fun createStore(request: StoreRequest): StoreResponse
+
+    fun updateStore(storeId: Long, request: StoreRequest): StoreResponse
+
 }
