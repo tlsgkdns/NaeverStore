@@ -58,7 +58,9 @@ class ProductServiceImpl(
 
         val product = getProductIfAuthorized(userId, productId)
 
-        productRepository.deleteProductById(product.id!!)
+        product.deleteProduct()
+
+        productRepository.save(product)
     }
 
     private fun getProductIfAuthorized(userId: Long, productId: Long): Product {
