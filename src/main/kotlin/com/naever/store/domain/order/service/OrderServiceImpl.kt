@@ -4,11 +4,17 @@ import com.naever.store.domain.exception.ModelNotFoundException
 import com.naever.store.domain.order.dto.*
 import com.naever.store.domain.order.model.OrderItem
 import com.naever.store.domain.order.model.Order
+import com.naever.store.domain.order.model.OrderStatus
 import com.naever.store.domain.order.repository.OrderRepository
 import com.naever.store.domain.order.repository.OrderItemRepository
 import com.naever.store.domain.product.repository.IProductRepository
 import com.naever.store.domain.user.repository.UserRepository
+import com.naever.store.infra.security.UserPrincipal
+import com.naever.store.infra.security.jwt.CustomAuthenticationToken
+import org.springframework.boot.Banner.Mode
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -79,24 +85,49 @@ class OrderServiceImpl(
         )
     }
 
+
     @Transactional
-    override fun updateOrder(orderId: Long, request: UpdateOrderRequest): OrderDetailResponse {
-        val updatedOrderItem = orderItemRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
+    override fun updateOrder(
+        userId: Long,
+        orderId: Long,
+        request: UpdateOrderRequest
+    ): OrderDetailResponse {
 
-        updatedOrderItem.order.address = request.address
-        updatedOrderItem.order.status = request.status
+        val order = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
 
-        val savedUpdatedOrderItem = orderItemRepository.save(updatedOrderItem)
+        if (userId != order.user.id) {
+            throw ModelNotFoundException("User", order.user.id)
+        }
+        order.address = request.address
+        val updatedOrder = orderRepository.save(order)
 
-        val orderItemsResponse = savedUpdatedOrderItem.order.let { order -> orderItemRepository.findByOrder(order).map {OrderItemResponse.fromEntity(it)} }
+        val orderItemsResponse = updatedOrder.let { order ->
+            orderItemRepository.findByOrder(order).map { OrderItemResponse.fromEntity(it) }
+        }
         return OrderDetailResponse(
-            order = OrderResponse.fromEntity(savedUpdatedOrderItem.order),
+            order = OrderResponse.fromEntity(updatedOrder),
             orderItems = orderItemsResponse
         )
     }
 
     @Transactional
-    override fun deleteOrder(orderId: Long) {
-        orderItemRepository.deleteById(orderId)
+    override fun deleteOrder(userId: Long, orderId: Long): OrderDetailResponse {
+        val order: Order = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
+
+        if (userId != order.user.id) {
+            throw ModelNotFoundException("User", userId)
+        }
+
+        order.status = OrderStatus.CANCELLED
+        orderRepository.save(order)
+
+        val orderItemsResponse = order.let { order ->
+            orderItemRepository.findByOrder(order).map { OrderItemResponse.fromEntity(it) }
+        }
+
+        return OrderDetailResponse(
+            order = OrderResponse.fromEntity(order),
+            orderItems = orderItemsResponse
+        )
     }
 }

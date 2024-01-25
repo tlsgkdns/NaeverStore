@@ -7,14 +7,14 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "order_history") // 주문을 생성, 조회, 수정, 삭제할 때의 Entity입니다.
 class Order(
-    @Column
+    @Column(name = "address", nullable = false)
     var address: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: User,
 
-    @Column
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     var status: OrderStatus = OrderStatus.ORDERED,
 
@@ -23,4 +23,5 @@ class Order(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
 }
