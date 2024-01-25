@@ -1,7 +1,6 @@
 package com.naever.store.domain.review.service
 
 import com.naever.store.domain.exception.ModelNotFoundException
-import com.naever.store.domain.order.model.QOrderItem.orderItem
 import com.naever.store.domain.order.repository.OrderItemRepository
 import com.naever.store.domain.review.dto.CreateReviewRequest
 import com.naever.store.domain.review.dto.ReviewResponse
@@ -22,9 +21,15 @@ class ReviewServiceImpl(
     private val userRepository: UserRepository
 ) : ReviewService {
 
-    override fun getAllReviewList(orderItemId: Long): List<ReviewResponse>{
-        TODO()
+    override fun getAllReviewList(orderItemId: Long): ReviewResponse{
+        val orderItem = orderItemRepository.findByIdOrNull(orderItemId)
+            ?: throw ModelNotFoundException("OrderItem", orderItemId)
+
+        val review = reviewRepository.findByOrderItemId(orderItemId) ?: throw ModelNotFoundException("Review",orderItemId)
+
+        return review.toResponse()
     }
+
 
     @Transactional
     override fun createReview(orderItemId: Long, request: CreateReviewRequest): ReviewResponse{
@@ -42,11 +47,20 @@ class ReviewServiceImpl(
 
     @Transactional
     override fun updateReview(orderItemId: Long, reviewId: Long, request: UpdateReviewRequest): ReviewResponse{
-        TODO()
+        val review = reviewRepository.findByOrderItemIdAndId(orderItemId,reviewId)
+            ?: throw ModelNotFoundException("OrderItem", orderItemId)
+
+        review.content = request.content
+        return reviewRepository.save(review).toResponse()
     }
 
     @Transactional
     override fun deleteReview(orderItemId: Long, reviewId: Long){
-        TODO()
+        val orderItem = orderItemRepository.findByIdOrNull(orderItemId)
+            ?: throw ModelNotFoundException("OrderItem",orderItemId)
+        val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review",reviewId)
+
+        orderItem.deleteReview(review)
+        orderItemRepository.save(orderItem)
     }
 }

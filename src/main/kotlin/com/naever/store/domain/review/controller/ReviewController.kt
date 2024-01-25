@@ -16,7 +16,7 @@ class ReviewController(
 
     @GetMapping
     fun getReviewList(@PathVariable orderItemId: Long
-    ): ResponseEntity<List<ReviewResponse>> {
+    ): ResponseEntity<ReviewResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(reviewService.getAllReviewList(orderItemId))
@@ -37,7 +37,6 @@ class ReviewController(
     @PostMapping
     fun createReview(
         @PathVariable orderItemId: Long,
-        @PathVariable userId: Long,
         @RequestBody createReviewRequest: CreateReviewRequest
     ): ResponseEntity<ReviewResponse> {
         return ResponseEntity

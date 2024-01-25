@@ -2,6 +2,7 @@ package com.naever.store.domain.order.model
 
 import com.naever.store.common.BaseTimeEntity
 import com.naever.store.domain.product.model.Product
+import com.naever.store.domain.review.model.Review
 import jakarta.persistence.*
 
 @Entity
@@ -19,9 +20,16 @@ class OrderItem(
     @Column(name = "quantity")
     val quantity: Int,
 
+    @OneToMany( cascade = [CascadeType.ALL], orphanRemoval = true,fetch = FetchType.LAZY)
+    var reviews: MutableList<Review> = mutableListOf(),
+
     ) : BaseTimeEntity() {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
+
+    fun deleteReview(review: Review) {
+        reviews.remove(review)
+    }
 } // 아이템의 n개

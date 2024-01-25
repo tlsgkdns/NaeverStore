@@ -15,7 +15,7 @@ class Review (
         val rating : String,
 
     @Column(name = "content")
-        val content : String,
+        var content : String,
 
     @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "order_item_id")
