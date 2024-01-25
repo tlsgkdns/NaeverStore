@@ -26,10 +26,8 @@ class ReviewServiceImpl(
             ?: throw ModelNotFoundException("OrderItem", orderItemId)
 
         val review = reviewRepository.findByOrderItemId(orderItemId) ?: throw ModelNotFoundException("Review",orderItemId)
-
         return review.toResponse()
     }
-
 
     @Transactional
     override fun createReview(orderItemId: Long, request: CreateReviewRequest): ReviewResponse{
