@@ -50,7 +50,7 @@ class StoreServiceImpl(
             .let { StoreResponse.from(it) }
     }
 
-    private fun getStoreIfAuthorized(userId: Long?, storeId: Long): Store {
+    override fun getStoreIfAuthorized(userId: Long?, storeId: Long): Store {
 
         userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
 
