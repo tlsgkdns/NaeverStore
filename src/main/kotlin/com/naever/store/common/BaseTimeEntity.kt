@@ -4,9 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
 import org.hibernate.annotations.CreationTimestamp
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 
@@ -17,4 +15,7 @@ abstract class BaseTimeEntity {
     @CreationTimestamp // Spring Data JPA에서 제공하는 Auditing 어노테이션. 각 엔티티의 생성일자를 추적함.
     @Column(nullable = false)
     var createdAt: ZonedDateTime = ZonedDateTime.now()
+
+    @Column(name = "is_deleted")
+    var isDeleted: Boolean = false
 }
