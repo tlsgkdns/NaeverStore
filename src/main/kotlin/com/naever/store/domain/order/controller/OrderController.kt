@@ -17,17 +17,21 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/orders")
-class OrderController(private val orderItemService: OrderService) {
+class OrderController(private val orderService: OrderService) {
 
     @GetMapping
-    fun findAll(): ResponseEntity<List<OrderDetailResponse>> {
-        val orders = orderItemService.findAll()
+    fun findAllByUserId(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+    ): ResponseEntity<List<OrderDetailResponse>> {
+        val orders = orderService.findAllByUser(userPrincipal.id)
         return ResponseEntity.status(HttpStatus.OK).body(orders)
     }
 
     @GetMapping("/{orderId}")
-    fun findById(@PathVariable orderId: Long): ResponseEntity<OrderDetailResponse> {
-        return ResponseEntity.status(HttpStatus.OK).body(orderItemService.findById(orderId))
+    fun findById(
+        @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @PathVariable orderId: Long): ResponseEntity<OrderDetailResponse> {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.findById(userPrincipal.id, orderId))
     }
 
     @PostMapping
@@ -36,7 +40,7 @@ class OrderController(private val orderItemService: OrderService) {
         @RequestBody orderRequest: CreateOrderRequest
     ): ResponseEntity<OrderDetailResponse> {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(orderItemService.createOrder(userPrincipal.id, orderRequest))
+            .body(orderService.createOrder(userPrincipal.id, orderRequest))
     }
 
     @PutMapping("/{orderId}")
@@ -45,7 +49,7 @@ class OrderController(private val orderItemService: OrderService) {
         @PathVariable orderId: Long,
         @RequestBody updateOrderRequest: UpdateOrderRequest): ResponseEntity<OrderDetailResponse> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(orderItemService.updateOrder(userPrincipal.id, orderId, updateOrderRequest))
+            .body(orderService.updateOrder(userPrincipal.id, orderId, updateOrderRequest))
     }
 
     @DeleteMapping("/{orderId}")
@@ -53,7 +57,7 @@ class OrderController(private val orderItemService: OrderService) {
         @AuthenticationPrincipal userPrincipal: UserPrincipal,
         @PathVariable orderId: Long): ResponseEntity<OrderDetailResponse> {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-            .body(orderItemService.deleteOrder(userPrincipal.id, orderId))
+            .body(orderService.deleteOrder(userPrincipal.id, orderId))
     }
 
 }

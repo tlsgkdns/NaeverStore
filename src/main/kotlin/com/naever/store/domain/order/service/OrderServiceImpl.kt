@@ -1,5 +1,6 @@
 package com.naever.store.domain.order.service
 
+import com.naever.store.domain.exception.ForbiddenException
 import com.naever.store.domain.exception.ModelNotFoundException
 import com.naever.store.domain.order.dto.*
 import com.naever.store.domain.order.model.OrderItem
@@ -26,8 +27,9 @@ class OrderServiceImpl(
     private val userRepository: UserRepository
 ) : OrderService {
 
-    override fun findAll(): List<OrderDetailResponse> {
-        return orderRepository.findAll().map { order ->
+    override fun findAllByUser(userId: Long): List<OrderDetailResponse> {
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+        return orderRepository.findByUser(user).map { order ->
             val orderItemsResponse = orderItemRepository.findByOrder(order).map { OrderItemResponse.fromEntity(it) }
             OrderDetailResponse(
                 order = OrderResponse.fromEntity(order),
@@ -36,9 +38,15 @@ class OrderServiceImpl(
         }
     }
 
-    override fun findById(orderId: Long): OrderDetailResponse {
+    override fun findById(userId: Long, orderId: Long): OrderDetailResponse {
+        val user = userRepository.findByIdOrNull(userId)
+            ?: throw ModelNotFoundException("User", userId)
         val foundOrder = orderRepository.findByIdOrNull(orderId)
             ?: throw ModelNotFoundException("Order", orderId)
+
+        if (userId != foundOrder.user.id) {
+            throw ForbiddenException(userId, "User", orderId)
+        }
 
         val orderItemResponse = orderItemRepository.findByOrder(foundOrder).map { OrderItemResponse.fromEntity(it) }
         return OrderDetailResponse(
@@ -96,7 +104,7 @@ class OrderServiceImpl(
         val order = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
 
         if (userId != order.user.id) {
-            throw ModelNotFoundException("User", order.user.id)
+            throw ForbiddenException(userId, "User", orderId)
         }
         order.address = request.address
         val updatedOrder = orderRepository.save(order)
@@ -115,7 +123,7 @@ class OrderServiceImpl(
         val order: Order = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
 
         if (userId != order.user.id) {
-            throw ModelNotFoundException("User", userId)
+            throw ForbiddenException(userId, "User", orderId)
         }
 
         order.status = OrderStatus.CANCELLED
