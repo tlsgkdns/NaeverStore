@@ -10,11 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 data class UserRegisterRequest(
     @field:NotBlank(message = "이메일은 필수입니다.")
-//    @field:Email(message = "이메일 형식이 아닙니다.")
+    @field:Email(message = "이메일 형식이 아닙니다.")
     val email: String,
     val address: String,
-//    @field:Length(min = 8, max = 15, message = "비밀번호는 8자 이상, 15자 이하여야합니다.")
-//    @field:Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$)", message = "비밀번호는 영문 대소문자, 숫자, 특수문자를 사용하세요.")
+    @field:Length(min = 8, max = 15, message = "비밀번호는 8자 이상, 15자 이하여야합니다.")
+    @field:Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$)", message = "비밀번호는 영문 대소문자, 숫자, 특수문자를 사용하세요.")
     val password: String,
     val passwordConfirm: String,
     @field:NotBlank(message = "닉네임은 필수입니다.")
