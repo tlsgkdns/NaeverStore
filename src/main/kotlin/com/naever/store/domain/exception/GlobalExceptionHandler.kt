@@ -45,4 +45,11 @@ class GlobalExceptionHandler {
             .body(ErrorResponse(message = e.message))
     }
 
+    @ExceptionHandler(IllegalStateException::class)
+    fun handleIllegalStateException(e: IllegalStateException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(ErrorResponse(message = e.message))
+    }
+
 }

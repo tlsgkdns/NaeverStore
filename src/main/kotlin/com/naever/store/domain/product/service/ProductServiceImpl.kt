@@ -37,7 +37,7 @@ class ProductServiceImpl(
         return Product(
             itemName = request.itemName,
             price = request.price,
-            quantity = request.quantity,
+            stock = request.stock,
             description = request.description,
             store = store
         ).let {
