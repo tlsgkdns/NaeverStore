@@ -64,6 +64,12 @@ class Product(
         changeAvailability()
     }
 
+    fun cancelOrder(quantity: Int) {
+        stock += quantity
+        sales -= quantity
+        changeAvailability()
+    }
+
     private fun changeAvailability() {
         availability = stock > 0
     }
