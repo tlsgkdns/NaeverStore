@@ -25,6 +25,10 @@ class StoreServiceImpl(
         val user = userRepository.findByIdOrNull(SecurityUtil.getLoginUserId())
             ?: throw ModelNotFoundException("User", SecurityUtil.getLoginUserId())
 
+        if (storeRepository.existsByUserId(user.id!!)) {
+            throw IllegalStateException("already created a store")
+        }
+
         return Store(
             name = request.name,
             introduction = request.introduction,

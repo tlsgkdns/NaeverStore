@@ -8,4 +8,6 @@ interface IStoreRepository {
 
     fun findById(id: Long): Store?
 
+    fun existsByUserId(userId: Long): Boolean
+
 }
