@@ -1,6 +1,6 @@
 package com.naever.store.domain.review.dto
 
 data class UpdateReviewRequest(
-    val rating : String,
+    val rating : Int,
     val content : String,
 )

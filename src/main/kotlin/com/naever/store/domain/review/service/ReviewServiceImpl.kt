@@ -22,10 +22,10 @@ class ReviewServiceImpl(
     private val userRepository: UserRepository
 ) : ReviewService {
 
-    override fun getAllReviewList(orderItemId: Long): ReviewResponse{
+    //리뷰를 조회
+    override fun getReview(orderItemId: Long): ReviewResponse{
         val orderItem = orderItemRepository.findByIdOrNull(orderItemId)
             ?: throw ModelNotFoundException("OrderItem", orderItemId)
-
         val review = reviewRepository.findByOrderItemId(orderItemId) ?: throw ModelNotFoundException("Review",orderItemId)
         return review.toResponse()
     }
@@ -58,11 +58,18 @@ class ReviewServiceImpl(
 
     @Transactional
     override fun updateReview(orderItemId: Long, reviewId: Long, request: UpdateReviewRequest): ReviewResponse{
+
         val review = reviewRepository.findByOrderItemIdAndId(orderItemId,reviewId)
             ?: throw ModelNotFoundException("OrderItem", orderItemId)
+        val userId = SecurityUtil.getLoginUserId()
+
+        if (review.user.id != userId) {
+            throw ForbiddenException(userId!!, "Review", reviewId)
+        }
 
         review.content = request.content
         return reviewRepository.save(review).toResponse()
+
     }
 
     @Transactional
@@ -71,7 +78,11 @@ class ReviewServiceImpl(
             ?: throw ModelNotFoundException("OrderItem",orderItemId)
         val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review",reviewId)
 
-//        orderItem.deleteReview(review)
-        orderItemRepository.save(orderItem)
+       if (review.user.id != orderItemId){
+           throw ForbiddenException(review.user.id!!, "OrderItem", orderItemId)
+       }
+
+        review.deleteReview()
+        reviewRepository.save(review)
     }
 }

@@ -15,11 +15,11 @@ class ReviewController(
 ) {
 
     @GetMapping
-    fun getReviewList(@PathVariable orderItemId: Long
+    fun getReview(@PathVariable orderItemId: Long
     ): ResponseEntity<ReviewResponse> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(reviewService.getAllReviewList(orderItemId))
+            .body(reviewService.getReview(orderItemId))
     }
 
     @PutMapping("/{reviewId}")

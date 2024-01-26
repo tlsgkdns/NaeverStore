@@ -29,7 +29,4 @@ class OrderItem(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    fun deleteReview(review: Review) {
-        reviews.remove(review)
-    }
 } // 아이템의 n개

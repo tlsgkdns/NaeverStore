@@ -5,31 +5,37 @@ import com.naever.store.domain.order.model.OrderItem
 import com.naever.store.domain.review.dto.ReviewResponse
 import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
-import java.time.LocalDateTime
+import org.hibernate.annotations.SQLRestriction
+
 
 @Entity
 @Table(name = "review")
-class Review (
+@SQLRestriction("is_deleted <> true")
+class Review(
 
-    @Column(name = "rating",nullable = false)
-        val rating : String,
+    @Column(name = "rating", nullable = false)
+    val rating: Int,
 
     @Column(name = "content")
-        var content : String,
+    var content: String,
 
     @OneToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "order_item_id")
-        val orderItem : OrderItem,
+    @JoinColumn(name = "order_item_id")
+    val orderItem: OrderItem,
 
     @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "user_id")
-        val user : User
+    @JoinColumn(name = "user_id")
+    val user: User,
 
-): BaseTimeEntity()
-{
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long? = null
+    ): BaseTimeEntity() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null
+
+    fun deleteReview() {
+        isDeleted = true
+    }
+
 }
 
 fun Review.toResponse(): ReviewResponse {
