@@ -1,5 +1,6 @@
 package com.naever.store.domain.review.service
 
+import com.naever.store.domain.exception.ForbiddenException
 import com.naever.store.domain.exception.ModelNotFoundException
 import com.naever.store.domain.order.repository.OrderItemRepository
 import com.naever.store.domain.review.dto.CreateReviewRequest
@@ -31,8 +32,20 @@ class ReviewServiceImpl(
 
     @Transactional
     override fun createReview(orderItemId: Long, request: CreateReviewRequest): ReviewResponse{
+
+        val userId = SecurityUtil.getLoginUserId()
+        val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
+
         val orderItem = orderItemRepository.findByIdOrNull(orderItemId) ?: throw ModelNotFoundException("orderItem", orderItemId)
-        val user = userRepository.findByIdOrNull(SecurityUtil.getLoginUserId()) ?: throw ModelNotFoundException("User", SecurityUtil.getLoginUserId())
+
+        if (orderItem.order.user.id != userId) {
+            throw ForbiddenException(userId!!, "OrderItem", orderItemId)
+        }
+
+        if (reviewRepository.existsByOrderItemId(orderItemId)) {
+            throw IllegalStateException("already written a review")
+        }
+
         return reviewRepository.save(
                 Review(
                     rating = request.rating,
@@ -58,7 +71,7 @@ class ReviewServiceImpl(
             ?: throw ModelNotFoundException("OrderItem",orderItemId)
         val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review",reviewId)
 
-        orderItem.deleteReview(review)
+//        orderItem.deleteReview(review)
         orderItemRepository.save(orderItem)
     }
 }
