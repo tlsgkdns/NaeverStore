@@ -45,7 +45,7 @@ class OrderServiceImpl(
             ?: throw ModelNotFoundException("Order", orderId)
 
         if (userId != foundOrder.user.id) {
-            throw ForbiddenException(userId, "User", orderId)
+            throw ForbiddenException(userId, "Order", orderId)
         }
 
         val orderItemResponse = orderItemRepository.findByOrder(foundOrder).map { OrderItemResponse.fromEntity(it) }
@@ -104,7 +104,7 @@ class OrderServiceImpl(
         val order = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
 
         if (userId != order.user.id) {
-            throw ForbiddenException(userId, "User", orderId)
+            throw ForbiddenException(userId, "Order", orderId)
         }
         order.address = request.address
         val updatedOrder = orderRepository.save(order)
@@ -123,7 +123,7 @@ class OrderServiceImpl(
         val order: Order = orderRepository.findByIdOrNull(orderId) ?: throw ModelNotFoundException("Order", orderId)
 
         if (userId != order.user.id) {
-            throw ForbiddenException(userId, "User", orderId)
+            throw ForbiddenException(userId, "Order", orderId)
         }
 
         order.status = OrderStatus.CANCELLED
