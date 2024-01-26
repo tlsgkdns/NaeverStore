@@ -4,9 +4,11 @@ import com.naever.store.common.BaseTimeEntity
 import com.naever.store.domain.product.dto.ProductRequest
 import com.naever.store.domain.user.model.User
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
 
 @Entity
 @Table(name = "product")
+@SQLRestriction("is_deleted <> true")
 class Product(
 
     @Column(name = "item_name")
@@ -64,6 +66,10 @@ class Product(
 
     private fun changeAvailability() {
         availability = stock > 0
+    }
+
+    fun deleteProduct() {
+        isDeleted = true
     }
 
 }
