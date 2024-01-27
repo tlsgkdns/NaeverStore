@@ -1,5 +1,6 @@
 package com.naever.store.domain.order.service
 
+import com.naever.store.domain.cart.repository.CartRepository
 import com.naever.store.domain.exception.ForbiddenException
 import com.naever.store.domain.exception.ModelNotFoundException
 import com.naever.store.domain.order.dto.*
@@ -19,7 +20,8 @@ class OrderServiceImpl(
     private val orderItemRepository: OrderItemRepository,
     private val orderRepository: OrderRepository,
     private val productRepository: IProductRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val cartRepository: CartRepository
 ) : OrderService {
 
     override fun findAllByUser(userId: Long): List<OrderDetailResponse> {
@@ -81,12 +83,13 @@ class OrderServiceImpl(
             }
         }
 
+        cartRepository.deleteItemsInCart(userId, request.orderItems.map { it.productId })
+
         return OrderDetailResponse(
             order = OrderResponse.fromEntity(order),
             orderItems = orderItems
         )
     }
-
 
     @Transactional
     override fun updateOrder(
