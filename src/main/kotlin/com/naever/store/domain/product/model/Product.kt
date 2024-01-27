@@ -57,10 +57,16 @@ class Product(
 
     fun order(quantity: Int) {
         if (stock - quantity < 0) {
-            throw IllegalStateException("out of stock")
+            throw IllegalStateException("$itemName (id: $id) out of stock")
         }
         stock -= quantity
         sales += quantity
+        changeAvailability()
+    }
+
+    fun cancelOrder(quantity: Int) {
+        stock += quantity
+        sales -= quantity
         changeAvailability()
     }
 

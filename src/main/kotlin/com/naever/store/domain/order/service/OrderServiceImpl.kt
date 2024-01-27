@@ -1,5 +1,6 @@
 package com.naever.store.domain.order.service
 
+import com.naever.store.domain.cart.repository.CartRepository
 import com.naever.store.domain.exception.ForbiddenException
 import com.naever.store.domain.exception.ModelNotFoundException
 import com.naever.store.domain.order.dto.*
@@ -10,12 +11,7 @@ import com.naever.store.domain.order.repository.OrderRepository
 import com.naever.store.domain.order.repository.OrderItemRepository
 import com.naever.store.domain.product.repository.IProductRepository
 import com.naever.store.domain.user.repository.UserRepository
-import com.naever.store.infra.security.UserPrincipal
-import com.naever.store.infra.security.jwt.CustomAuthenticationToken
-import org.springframework.boot.Banner.Mode
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,7 +20,8 @@ class OrderServiceImpl(
     private val orderItemRepository: OrderItemRepository,
     private val orderRepository: OrderRepository,
     private val productRepository: IProductRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val cartRepository: CartRepository
 ) : OrderService {
 
     override fun findAllByUser(userId: Long): List<OrderDetailResponse> {
@@ -68,31 +65,31 @@ class OrderServiceImpl(
             )
         )
 
-        val orderItems = ArrayList<OrderItemResponse>()
-        for (orderItemRequest in request.orderItems) {
+        val orderItems = request.orderItems.map {
 
-            val product = productRepository.findProductById(orderItemRequest.productId)
-                ?: throw ModelNotFoundException("Product", orderItemRequest.productId)
+            val product = productRepository.findProductById(it.productId)
+                ?: throw ModelNotFoundException("Product", it.productId)
 
-            product.order(orderItemRequest.quantity)
+            product.order(it.quantity)
 
-            orderItems.add(orderItemRepository.save(
+            orderItemRepository.save(
                 OrderItem(
                     order = order,
                     product = product,
-                    quantity = orderItemRequest.quantity
+                    quantity = it.quantity
                 )
             ).let {
                 OrderItemResponse.fromEntity(it)
-            })
+            }
         }
+
+        cartRepository.deleteItemsInCart(userId, request.orderItems.map { it.productId })
 
         return OrderDetailResponse(
             order = OrderResponse.fromEntity(order),
             orderItems = orderItems
         )
     }
-
 
     @Transactional
     override fun updateOrder(
@@ -129,8 +126,11 @@ class OrderServiceImpl(
         order.status = OrderStatus.CANCELLED
         orderRepository.save(order)
 
-        val orderItemsResponse = order.let { order ->
-            orderItemRepository.findByOrder(order).map { OrderItemResponse.fromEntity(it) }
+        val orderItemsResponse = orderItemRepository.findByOrder(order).map {
+
+            it.product.cancelOrder(it.quantity)
+
+            OrderItemResponse.fromEntity(it)
         }
 
         return OrderDetailResponse(
