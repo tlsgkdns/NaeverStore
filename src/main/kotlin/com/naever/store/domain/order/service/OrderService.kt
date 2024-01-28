@@ -1,7 +1,6 @@
 package com.naever.store.domain.order.service
 
 import com.naever.store.domain.order.dto.*
-import com.naever.store.infra.security.UserPrincipal
 
 interface OrderService {
 
