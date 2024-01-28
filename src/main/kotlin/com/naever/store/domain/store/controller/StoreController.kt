@@ -1,5 +1,7 @@
 package com.naever.store.domain.store.controller
 
+import com.naever.store.domain.order.dto.OrderAdminResponse
+import com.naever.store.domain.order.service.OrderService
 import com.naever.store.domain.product.dto.ProductPageRequest
 import com.naever.store.domain.product.dto.ProductPageResponse
 import com.naever.store.domain.product.dto.ProductRequest
@@ -16,7 +18,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/stores")
 class StoreController(
     private val storeService: StoreService,
-    private val productService: ProductService
+    private val productService: ProductService,
+    private val orderService: OrderService
 ) {
 
     @PostMapping
@@ -103,6 +106,13 @@ class StoreController(
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
             .build()
+    }
+
+    @GetMapping("/{storeId}/orders")
+    fun getOrderList(@PathVariable storeId: Long): ResponseEntity<List<OrderAdminResponse>> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.getOrderListByStoreId(storeId))
     }
 
 }

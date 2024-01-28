@@ -13,5 +13,7 @@ interface OrderService {
     fun updateOrder(userId: Long, orderId: Long, request: UpdateOrderRequest): OrderDetailResponse
 
     fun deleteOrder(userId: Long, orderId: Long): OrderDetailResponse
+
+    fun getOrderListByStoreId(storeId: Long): List<OrderAdminResponse>
 }
 

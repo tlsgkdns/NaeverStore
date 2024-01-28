@@ -14,7 +14,9 @@ import com.naever.store.domain.order.repository.OrderStoreRepository
 import com.naever.store.domain.product.repository.IProductRepository
 import com.naever.store.domain.store.dto.StoreResponse
 import com.naever.store.domain.store.repository.IStoreRepository
+import com.naever.store.domain.store.service.StoreService
 import com.naever.store.domain.user.repository.UserRepository
+import com.naever.store.infra.security.SecurityUtil
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -27,7 +29,8 @@ class OrderServiceImpl(
     private val userRepository: UserRepository,
     private val cartRepository: CartRepository,
     private val storeRepository: IStoreRepository,
-    private val orderStoreRepository: OrderStoreRepository
+    private val orderStoreRepository: OrderStoreRepository,
+    private val storeService: StoreService
 ) : OrderService {
 
     override fun findAllByUser(userId: Long): List<OrderDetailResponse> {
@@ -187,5 +190,22 @@ class OrderServiceImpl(
             order = OrderResponse.fromEntity(order),
             orderStores = orderStores
         )
+    }
+
+    override fun getOrderListByStoreId(storeId: Long): List<OrderAdminResponse> {
+
+        val store = storeService.getStoreIfAuthorized(SecurityUtil.getLoginUserId(), storeId)
+
+        return orderRepository.findByStoreId(store.id!!).map { order ->
+
+            OrderAdminResponse(
+                orderId = order.id!!,
+                address = order.address,
+                orderedDate = order.createdAt,
+                userId = order.user.id!!,
+                orderItems = orderItemRepository.findByOrderIdAndStoreId(order.id!!, storeId)
+                    .map { OrderItemResponse.fromEntity(it) }
+            )
+        }
     }
 }
