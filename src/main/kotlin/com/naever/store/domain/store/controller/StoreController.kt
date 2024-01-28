@@ -1,5 +1,6 @@
 package com.naever.store.domain.store.controller
 
+import com.naever.store.domain.order.dto.OrderAdminRequest
 import com.naever.store.domain.order.dto.OrderAdminResponse
 import com.naever.store.domain.order.service.OrderService
 import com.naever.store.domain.product.dto.ProductPageRequest
@@ -113,6 +114,16 @@ class StoreController(
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(orderService.getOrderListByStoreId(storeId))
+    }
+
+    @PatchMapping("/{storeId}/orders")
+    fun updateOrderStatus(
+        @PathVariable storeId: Long,
+        @RequestBody request: OrderAdminRequest
+    ): ResponseEntity<List<OrderAdminResponse>> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(orderService.updateStatus(storeId, request))
     }
 
 }

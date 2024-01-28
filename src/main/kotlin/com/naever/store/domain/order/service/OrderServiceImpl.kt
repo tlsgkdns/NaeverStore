@@ -202,6 +202,34 @@ class OrderServiceImpl(
                 orderId = order.id!!,
                 address = order.address,
                 orderedDate = order.createdAt,
+                status = order.status,
+                userId = order.user.id!!,
+                orderItems = orderItemRepository.findByOrderIdAndStoreId(order.id!!, storeId)
+                    .map { OrderItemResponse.fromEntity(it) }
+            )
+        }
+    }
+
+    @Transactional
+    override fun updateStatus(storeId: Long, request: OrderAdminRequest): List<OrderAdminResponse> {
+
+        storeService.getStoreIfAuthorized(SecurityUtil.getLoginUserId(), storeId)
+
+        val status = when (request.status) {
+            OrderStatus.ON_DELIVERY.name -> OrderStatus.ON_DELIVERY
+            OrderStatus.DELIVERED.name -> OrderStatus.DELIVERED
+            else -> throw IllegalArgumentException("invalid status")
+        }
+
+        return orderRepository.findList(request.orderIds).map { order ->
+
+            order.status = status
+
+            OrderAdminResponse(
+                orderId = order.id!!,
+                address = order.address,
+                orderedDate = order.createdAt,
+                status = order.status,
                 userId = order.user.id!!,
                 orderItems = orderItemRepository.findByOrderIdAndStoreId(order.id!!, storeId)
                     .map { OrderItemResponse.fromEntity(it) }

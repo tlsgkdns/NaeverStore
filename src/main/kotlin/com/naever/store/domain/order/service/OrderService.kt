@@ -15,5 +15,7 @@ interface OrderService {
     fun deleteOrder(userId: Long, orderId: Long): OrderDetailResponse
 
     fun getOrderListByStoreId(storeId: Long): List<OrderAdminResponse>
+
+    fun updateStatus(storeId: Long, request: OrderAdminRequest): List<OrderAdminResponse>
 }
 

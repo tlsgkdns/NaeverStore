@@ -1,6 +1,7 @@
 package com.naever.store.domain.order.repository
 
 import com.naever.store.domain.order.model.Order
+import com.naever.store.domain.order.model.OrderStatus
 import com.naever.store.domain.user.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -12,4 +13,9 @@ interface OrderRepository: JpaRepository<Order, Long> {
     @Modifying
     @Query("select o from Order o left join OrderStore s on o.id = s.order.id left join User u on o.user.id = u.id where s.store.id = :storeId")
     fun findByStoreId(storeId: Long): List<Order>
+
+    @Modifying
+    @Query("select o from Order o where o.id in :orderIds")
+    fun findList(orderIds: List<Long>): List<Order>
+
 }
