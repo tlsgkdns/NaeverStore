@@ -18,6 +18,9 @@ class Order(
     @Enumerated(EnumType.STRING)
     var status: OrderStatus = OrderStatus.ORDERED,
 
+    @Column(name = "total_price")
+    var totalPrice: Int = 0
+
     ) : BaseTimeEntity() {
 
     @Id
