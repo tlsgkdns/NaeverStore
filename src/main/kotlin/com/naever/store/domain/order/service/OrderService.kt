@@ -17,5 +17,7 @@ interface OrderService {
     fun getOrderListByStoreId(storeId: Long): List<OrderAdminResponse>
 
     fun updateStatus(storeId: Long, request: OrderAdminRequest): List<OrderAdminResponse>
+
+    fun cancelOrders(storeId: Long, request: OrderAdminRequest)
 }
 

@@ -236,4 +236,16 @@ class OrderServiceImpl(
             )
         }
     }
+
+    @Transactional
+    override fun cancelOrders(storeId: Long, request: OrderAdminRequest) {
+
+        storeService.getStoreIfAuthorized(SecurityUtil.getLoginUserId(), storeId)
+
+        orderRepository.findList(request.orderIds).forEach { order ->
+
+            order.status = OrderStatus.CANCELLED
+        }
+    }
+
 }

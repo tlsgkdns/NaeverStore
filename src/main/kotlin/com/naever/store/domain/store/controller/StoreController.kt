@@ -126,4 +126,15 @@ class StoreController(
             .body(orderService.updateStatus(storeId, request))
     }
 
+    @DeleteMapping("/{storeId}/orders")
+    fun cancelOrders(
+        @PathVariable storeId: Long,
+        @RequestBody request: OrderAdminRequest
+    ): ResponseEntity<Unit> {
+        orderService.cancelOrders(storeId, request)
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .build()
+    }
+
 }
