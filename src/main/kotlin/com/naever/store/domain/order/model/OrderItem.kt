@@ -20,9 +20,6 @@ class OrderItem(
     @Column(name = "quantity")
     val quantity: Int,
 
-    @OneToMany( cascade = [CascadeType.ALL], orphanRemoval = true,fetch = FetchType.LAZY)
-    var reviews: MutableList<Review> = mutableListOf(),
-
     ) : BaseTimeEntity() {
 
     @Id

@@ -31,7 +31,7 @@ class UserController(
     }
     @PreAuthorize("hasAuthority('ROLE_USER') && authentication?.principal?.id == #userId")
     @PutMapping("/{userId}")
-    fun updateUser(@PathVariable userId: Long, @Valid updateRequest: UserUpdateRequest
+    fun updateUser(@PathVariable userId: Long, @Valid @RequestBody updateRequest: UserUpdateRequest
                    , bindingResult: BindingResult)
     : ResponseEntity<UserResponse>
     {
