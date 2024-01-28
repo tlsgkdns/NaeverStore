@@ -59,12 +59,18 @@ class ReviewServiceImpl(
     @Transactional
     override fun updateReview(orderItemId: Long, reviewId: Long, request: UpdateReviewRequest): ReviewResponse{
 
+        val orderItem = orderItemRepository.findByIdOrNull(orderItemId)
+            ?: throw ModelNotFoundException("OrderItem", orderItemId)
         val review = reviewRepository.findByOrderItemIdAndId(orderItemId,reviewId)
             ?: throw ModelNotFoundException("OrderItem", orderItemId)
         val userId = SecurityUtil.getLoginUserId()
 
         if (review.user.id != userId) {
             throw ForbiddenException(userId!!, "Review", reviewId)
+        }
+
+        if (orderItem.order.user.id != userId) {
+            throw ForbiddenException(userId!!, "OrderItem", orderItemId)
         }
 
         review.content = request.content
@@ -78,9 +84,11 @@ class ReviewServiceImpl(
             ?: throw ModelNotFoundException("OrderItem",orderItemId)
         val review = reviewRepository.findByIdOrNull(reviewId) ?: throw ModelNotFoundException("Review",reviewId)
 
-       if (review.user.id != orderItemId){
-           throw ForbiddenException(review.user.id!!, "OrderItem", orderItemId)
-       }
+        val userId = SecurityUtil.getLoginUserId()
+
+        if (review.user.id != userId) {
+            throw ForbiddenException(userId!!, "Review", reviewId)
+        }
 
         review.deleteReview()
         reviewRepository.save(review)
