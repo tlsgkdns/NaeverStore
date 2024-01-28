@@ -245,6 +245,11 @@ class OrderServiceImpl(
         orderRepository.findList(request.orderIds).forEach { order ->
 
             order.status = OrderStatus.CANCELLED
+
+            orderItemRepository.findByOrderIdAndStoreId(order.id!!, storeId).forEach { orderItem ->
+
+                orderItem.product.cancelOrder(orderItem.quantity)
+            }
         }
     }
 
