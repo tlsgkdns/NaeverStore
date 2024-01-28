@@ -26,7 +26,7 @@ class ReviewServiceImpl(
     override fun getReview(orderItemId: Long): ReviewResponse{
         val orderItem = orderItemRepository.findByIdOrNull(orderItemId)
             ?: throw ModelNotFoundException("OrderItem", orderItemId)
-        val review = reviewRepository.findByOrderItemId(orderItemId) ?: throw ModelNotFoundException("Review",orderItemId)
+        val review = reviewRepository.findByOrderItemId(orderItemId) ?: throw ModelNotFoundException("Review",null)
         return review.toResponse()
     }
 
@@ -38,7 +38,7 @@ class ReviewServiceImpl(
 
         val orderItem = orderItemRepository.findByIdOrNull(orderItemId) ?: throw ModelNotFoundException("orderItem", orderItemId)
 
-        if (orderItem.order.user.id != userId) {
+        if (orderItem.orderStore.order.user.id != userId) {
             throw ForbiddenException(userId!!, "OrderItem", orderItemId)
         }
 
@@ -64,7 +64,7 @@ class ReviewServiceImpl(
 
         val userId = SecurityUtil.getLoginUserId()
 
-        if (orderItem.order.user.id != userId) {
+        if (orderItem.orderStore.order.user.id != userId) {
             throw ForbiddenException(userId!!, "OrderItem", orderItemId)
         }
 
@@ -75,6 +75,7 @@ class ReviewServiceImpl(
             throw ForbiddenException(userId!!, "Review", reviewId)
         }
 
+        review.rating = request.rating
         review.content = request.content
         return reviewRepository.save(review).toResponse()
     }

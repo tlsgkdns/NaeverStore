@@ -17,7 +17,7 @@ class Store(
     @Column(name = "introduction")
     var introduction: String,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user: User
 

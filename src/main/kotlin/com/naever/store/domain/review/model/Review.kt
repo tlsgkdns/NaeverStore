@@ -14,12 +14,12 @@ import org.hibernate.annotations.SQLRestriction
 class Review(
 
     @Column(name = "rating", nullable = false)
-    val rating: Int,
+    var rating: Int,
 
     @Column(name = "content")
     var content: String,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id")
     val orderItem: OrderItem,
 
