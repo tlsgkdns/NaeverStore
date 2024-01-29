@@ -7,4 +7,6 @@ interface UserService {
     fun loginUser(loginRequest: UserLoginRequest): UserLoginResponse
     fun updateUser(userId: Long, updateRequest: UserUpdateRequest): UserResponse
     fun updatePassword(userId: Long, userPasswordUpdateRequest: UserPasswordUpdateRequest): UserResponse
+
+    fun getUser(userId: Long): UserResponse
 }

@@ -51,4 +51,12 @@ class UserController(
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.updatePassword(userId, userPasswordUpdateDTO))
     }
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/{userId}")
+    fun getUser(@PathVariable userId: Long): ResponseEntity<UserResponse>
+    {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.getUser(userId))
+    }
+
 }
