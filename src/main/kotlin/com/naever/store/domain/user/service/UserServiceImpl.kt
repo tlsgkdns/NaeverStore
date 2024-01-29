@@ -35,7 +35,6 @@ class UserServiceImpl(
             tokenProvider.generateToken(user.id.toString(), user.email, user.authority.name))
     }
     @Transactional
-
     override fun updateUser(userId: Long, updateRequest: UserUpdateRequest): UserResponse {
         val user = userRepository.findByIdOrNull(userId) ?: throw ModelNotFoundException("User", userId)
         if(userRepository.existsByEmail(updateRequest.email ?: user.email) && user.email != updateRequest.email)
@@ -55,4 +54,12 @@ class UserServiceImpl(
         user.updatePassword(passwordEncoder.encode(userPasswordUpdateRequest.newPassword))
         return UserResponse.from(userRepository.save(user))
     }
+
+    override fun getUser(userId: Long): UserResponse {
+        return userRepository.findByIdOrNull(userId)?.let { UserResponse.from(it) }
+            ?: throw ModelNotFoundException("User", userId)
+
+    }
+
+
 }
