@@ -3,8 +3,13 @@
 ### 프로젝트 명 : NAEVER STORE (내일배움캠프 스마트 스토어)
 ### 프로젝트 소개 : 사용자가 상점을 생성해 상품을 판매하거나 다른 상품을 구매하는 서비스 
 ### 프로젝트 계기 : 팀원들 모두가 가장 많이 접해본 사이트를 직접 만들어보고자 했습니다. 
-
 ---
+### 기술 스택
+ * 언어: <img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
+ * 프레임워크: <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+ * 라이브러리: <img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
+ * 데이터베이스: <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+ * 배포: <img src="https://img.shields.io/badge/Amazon Aws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
 ### ERD 
  ![image](https://github.com/NaeverStore/NaeverStore/assets/149165093/3796ff9d-515c-41c9-9d4b-b9c788091659)
 
@@ -13,71 +18,19 @@
 ![image](https://github.com/NaeverStore/NaeverStore/assets/149165093/464f6409-79af-472c-a9ed-e2187797a9b5)
 
 ---
+
 ### 프로젝트 기능
-#### 사용자 인증 기능 
-- 회원가입 기능
-  - email, password를 Client에서 전달받기
-  - email은  이메일 양식으로 구성
-  - password는  `최소 8자 이상, 15자 이하이며 최소 하나의 각 알파벳 대소문자(a~z, A~Z), 숫자(0~9), 특수문자`로 구성
-  - DB에 중복된 username이 없다면 회원을 저장하고 Client 로 성공했다는 메시지, 상태코드 반환하기
-  - 회원 권한 부여하기 (ADMIN, USER) - ADMIN 회원은 모든 게시글, 댓글 수정 / 삭제 가능
+ * 사용자 인증 기능 
+ * 프로필 관리 
+ * 주문 CRUD 기능 
+ * 리뷰 CRUD 기능 
+ * 백오피스 기능(주문 관리)
+ * AWS 를 이용한 서비스의 배포
+ * 장바구니 기능
+ * 상점, 상품 기능
+---
 
-- 로그인 기능
-  - username, password를 Client에서 전달받음
-  - DB에서 username을 사용하여 저장된 회원의 유무를 확인하고 있다면 password 비교
-  - 로그인 성공 시, 로그인에 성공한 유저의 정보와 JWT를 활용하여 토큰을 발급하고, 발급한 토큰을 Header에 추가하고 성공했다는 메시지, 상태코드 와 함께 Client에 반환
-
-#### 프로필 관리 
-- 프로필 수정 기능
-  - 이름, 한 줄 소개와 같은 기본적인 정보를 볼 수 있음.
-  - 유저 정보를 수정할 수 있다.
-  - 비밀번호 수정 시에는 비밀번호를 한 번 더 입력받음.
-  - 최근 3번안에 사용한 비밀번호는 사용할 수 없도록 제한.
-    - Hibernate Envers 활용해 사용자 정보 변경이력을 저장하는 테이블을 생성하고, 해당 테이블에서 비밀번호 이력을 조회함.
-
-#### 주문 CRUD 기능 
-- 회원 가입한 사용자는 상품 주문을 작성할 수 있음.
-    - 주문한 상품은 장바구니에서 제거됨.
-    - 주문한 상품의 총 가격을 저장.
-- 사용자는 본인이 작성한 주문 목록을 조회할 수 있음. (주문 번호, 주문 일자, 주문 상태, 배송지, 구매한 상점 정보 등)
-- 사용자는 본인이 작성한 주문 단건 조회를 통해 상세 주문 정보를 확인할 수 있음. (주문한 상품의 id, 수량, 금액 등) 해당 주문을 작성했던 본인이 아니면 조회시 예외처리 됨.
-- 사용자는 본인이 작성한 주문을 취소하거나, 배송지 정보를 변경할 수 있음. 해당 주문을 작성했던 본인이 아니면 수정이나 삭제 시 예외처리 됨.
-- 주문 등록/취소 시 상품 재고와 판매량이 변경됨.
-
-#### 리뷰 CRUD 기능 
-- 리뷰 작성, 조회, 수정, 삭제 기능
-    - 본인의 주문한 건에 대해서 리뷰를 생성할 수 있어야 함
-    - 주문자만 해당 리뷰를 수정/삭제할 수 있어야 함
-
-#### 백오피스 기능(주문 관리)
-- 상점에서 주문 목록을 조회할 수 있음
-- 상점에서 주문의 배송 상태를 변경할 수 있음
-- 상점에서 주문을 취소할 수 있음
-    - 취소 시 상품의 재고, 판매량이 함께 변경됨.
-
-#### AWS 를 이용한 서비스의 배포
-- AWS EC2를 이용해서 배포
-    - 스왑 메모리를 할당해 빌드 속도를 높임.
-    - 8080 포트를 입력하지 않고도 접속하도록 포트 포워딩 함.
-    - RDS를 활용한 배포
-
-#### 장바구니 기능
-- 장바구니에 물건을 추가한다.
-- 장바구니에 한 개 이상의 물건을 삭제한다
-- 장바구니의 물건들을 조회한다.
-
-
-#### 상점, 상품 기능
-- 상점 등록 시 사용자당 하나만 등록하도록 제한함.
-- 상점 수정/삭제 시 등록한 사용자만 가능함.
-- 상점 삭제 시 상품도 함께 삭제함.
-- 상품 등록 시 상점이 있는 경우만 등록 가능함.
-- 상품 수정/삭제 시 상점을 등록한 사용자만 가능함.
-- 상품 조회 시 Offset 기반 pagination 을 적용함.
-    - 아이템 이름, 가격 범위로 검색할 수 있음.
-    - 가격 낮은 순, 가격 높은 순, 최신순으로 정렬할 수 있음.
-
-### 담당 파트
+### 내 담당 파트
  * 장바구니 기능
  * 3회 이내 비밀번호 사용 금지 기능
  * AWS를 이용한 배포
@@ -87,7 +40,14 @@
  * CI/CD의 번거로움 증가
 ##### 스왑 메모리 활용
  * 디스크의 일부를 RAM처럼 사용하여 빌드 성공
-#### Enverse의 활용
+#### Enverse의 활용!
+
+
  * 처음엔 3회 이내에 사용한 비밀번호 사용 금지를 위한 비밀번호 기록 엔티티 사용했었다.
  * 그런데, 비밀번호 기록 엔티티 관리가 번거로워서 개선이 필요하다고 느꼈다.
  * 업데이트 내역을 자동으로 기록하는 Enverse를 활용해서 이를 개선하였다.
+![revision](https://github.com/tlsgkdns/NaeverStore/assets/24753709/fe62f020-873d-40b0-b58b-c7b4bfaf7d1e)
+> RevisionRepository를 상속받아서
+
+![3회](https://github.com/tlsgkdns/NaeverStore/assets/24753709/0fe62144-f07f-4e8d-ba22-3a300d114d85)
+> 비밀번호 이력을 자동적으로 기록한다. 
